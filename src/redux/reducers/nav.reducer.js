@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 export const navSlice = createSlice({
   name: 'nav',
@@ -7,11 +7,11 @@ export const navSlice = createSlice({
   },
   reducers: {
     selectItem: (state, action) => {
-      state.selectedItem = action.payload;
+      state.selectedItem = action.payload
     },
   },
-});
+})
 
-export const { selectItem } = navSlice.actions;
+export const { selectItem } = navSlice.actions
 
-export default navSlice.reducer;
+export default navSlice.reducer

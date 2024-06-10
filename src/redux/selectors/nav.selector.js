@@ -1,1 +1,1 @@
-export const selectNav = (state) => state.nav;
+export const selectNav = (state) => state.nav
