@@ -1,47 +1,46 @@
-import * as React from 'react';
-import SpeedDial from '@mui/material/SpeedDial';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import SpeedDialAction from '@mui/material/SpeedDialAction';
-import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import PrintIcon from '@mui/icons-material/Print';
-import ShareIcon from '@mui/icons-material/Share';
-import { StyledBasicSpeedDial } from './basicSpeedDial.style';
-import { useDispatch } from 'react-redux';
-import { selectItem } from '../redux/reducers/nav.reducer.js';
+import SpeedDial from '@mui/material/SpeedDial'
+import SpeedDialIcon from '@mui/material/SpeedDialIcon'
+import SpeedDialAction from '@mui/material/SpeedDialAction'
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined'
+import SaveIcon from '@mui/icons-material/Save'
+import PrintIcon from '@mui/icons-material/Print'
+import ShareIcon from '@mui/icons-material/Share'
+import { StyledBasicSpeedDial } from './basicSpeedDial.style'
+import { useDispatch } from 'react-redux'
+import { selectItem } from '../redux/reducers/nav.reducer.js'
 
 const actions = [
   { icon: <FileCopyIcon />, name: 'Copy' },
   { icon: <SaveIcon />, name: 'Save' },
   { icon: <PrintIcon />, name: 'Print' },
   { icon: <ShareIcon />, name: 'Share' },
-];
+]
 
 export function BasicSpeedDial() {
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   
   const handleClick = (e) => {
-    const action = e.currentTarget.getAttribute('aria-label');
+    const action = e.currentTarget.getAttribute('aria-label')
 
     switch (action) {
-        case 'Copy':
-          console.log('Copying...');
-          break;
-        case 'Save':
-          console.log('Saving...');
-          break;
-        case 'Print':
-          console.log('Printing...');
-          break;
-        case 'Share':
-          console.log('Sharing...');
-          break;
-        default:
-          console.log('No action selected');
+      case 'Copy':
+        console.log('Copying...')
+        break
+      case 'Save':
+        console.log('Saving...')
+        break
+      case 'Print':
+        console.log('Printing...')
+        break
+      case 'Share':
+        console.log('Sharing...')
+        break
+      default:
+        console.log('No action selected')
     }
-    dispatch(selectItem);
-  };
+    dispatch(selectItem(action))
+  }
 
   return (
     <StyledBasicSpeedDial>
@@ -60,5 +59,5 @@ export function BasicSpeedDial() {
         ))}
       </SpeedDial>
     </StyledBasicSpeedDial>
-  );
+  )
 }

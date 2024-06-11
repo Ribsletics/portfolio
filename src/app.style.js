@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled } from "@mui/material"
 
 export const StyledApp = styled(Box)(
   ({ theme }) => `
@@ -11,4 +11,4 @@ export const StyledApp = styled(Box)(
     overflow:hidden;
   }
 `,
-);
+)
