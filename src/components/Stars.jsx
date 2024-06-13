@@ -86,10 +86,10 @@ export const Stars = ({ onInitialized }) => {
     const { selectedItem: newItem } = data;
     if (selectedItem.current >= 0) {
       gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3});
-      gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y:"+=5000" }, duration: .8 });
+      gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y:"+=5000" }, duration: .8, ease: "power2.inOut" });
     }
-    gsap.to(planets.current[newItem].planetSprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.7 });
-    gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y:app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.7 });
+    gsap.to(planets.current[newItem].planetSprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
+    gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y:app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
     selectedItem.current = newItem;
     //updateWarpSpeed(1);
     gsap.to(warpSpeed, { current: 1, duration: 1, delay: 0, ease: "power2.inOut" });
