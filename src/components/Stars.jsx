@@ -1,15 +1,15 @@
-import { Box } from '@mui/material'
+ import { Box } from '@mui/material'
 import React, { useCallback, useEffect, useReducer, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { usePixiApp } from '../hooks/pixi.hook'
 import { Assets, Sprite } from 'pixi.js'
-import { useRebound/* , useInterval */ } from '../hooks/timer.hook'
 import { useSelector } from 'react-redux'
 import { selectNav } from '../redux/selectors/nav.selector';
 
 import gsap from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
 import * as PIXI from "pixi.js";
+import { AnimatedPlanet } from './pixi/AnimatedPlanet'
 
 const initialStarState = {
   fov: 20,
@@ -71,7 +71,7 @@ export const Stars = ({ onInitialized }) => {
   const stars = useRef([])
   const cameraZ = useRef(0)
   const speed = useRef(0)
-  const [warpSpeed] = useRebound(0, 2000)
+  const [warpSpeed] = useRef(2000)
   const selectedItem = useRef()
   const [starState] = useReducer(starReducer, initialStarState)
   const appRef = useRef();
@@ -84,13 +84,15 @@ export const Stars = ({ onInitialized }) => {
     const app = appRef.current;
     const { selectedItem: newItem } = data;
     if (selectedItem.current && selectedItem.current in planets.current) {
-      gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3 });
-      gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
+      planets.current[selectedItem.current].sprite.active = false
+      gsap.to(planets.current[selectedItem.current].sprite, { pixi: { alpha: 0 }, duration: .3, delay: .3 });
+      gsap.fromTo(planets.current[selectedItem.current].sprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
     }
-    gsap.to(planets.current[newItem].planetSprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
-    gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
+    planets.current[newItem].sprite.active = true
+    gsap.to(planets.current[newItem].sprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
+    gsap.fromTo(planets.current[newItem].sprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
     selectedItem.current = newItem;
-    //updateWarpSpeed(1);
+
     gsap.to(warpSpeed, { current: 1, duration: 1, delay: 0, ease: "power2.inOut" });
     gsap.to(warpSpeed, { current: 0, duration: .5, delay: 1.5, ease: "power2.outIn" });
   }, [warpSpeed]);
@@ -150,7 +152,7 @@ export const Stars = ({ onInitialized }) => {
   const initStars = useCallback((app) => {
     Assets.load("https://pixijs.com/assets/star.png").then((starTexture) => {
       // Create the stars
-      for (let i = 0; i < 1000; i++) {
+      for (let i = 0; i < 100; i++) {
         const star = { sprite: new Sprite(starTexture), z: 0, x: 0, y: 0 }
 
         star.sprite.anchor.x = 0.5;
@@ -166,24 +168,17 @@ export const Stars = ({ onInitialized }) => {
   }, [updateStar, updateTicker, ticker, onInitialized, update]);
 
   const planets = useRef({
-    experience: { planetSprite: null, active: false, url: "/assets/planet-green.png" },
-    about:      { planetSprite: null, active: false, url: "/assets/planet-red.png" },
-    interns:    { planetSprite: null, active: false, url: "/assets/planet-blue.png" },
-    contact:    { planetSprite: null, active: false, url: "/assets/planet-orange.png" }});
+    experience: { planetSprite: null, rotates: true, url: "/assets/white-dunes.png" },
+    about:      { planetSprite: null, rotates: true, url: "/assets/mars.png" },
+    interns:    { planetSprite: null, rotates: true, url: "/assets/gas.png" },
+    contact:    { planetSprite: null, rotates: true, url: "/assets/white-sand.png" }});
 
   const initPlanets = useCallback((app) => {
     appRef.current = app;
-    Object.values(planets.current).forEach((planetDef) => {
-      Assets.load(planetDef.url).then((planetTexture) => {
-        const planetSprite = planetDef.planetSprite = new Sprite(planetTexture);
-        planetSprite.anchor.set(0.5);
-        planetSprite.x = app.renderer.screen.width / 2;
-        planetSprite.y = app.renderer.screen.height / 2;
-        planetSprite.scale.set(0.2);
-        planetSprite.alpha = 0;
-        planetDef.active = false;
-        app.stage.addChild(planetSprite);
-      })
+    planets.current.forEach((planetDef) => {
+      Assets.load(planetDef.url).then((texture) => {
+        planetDef.sprite = new AnimatedPlanet({ texture, app, ...planetDef })
+      });
     });
   }, []);
 

@@ -678,6 +678,11 @@
   resolved "https://registry.npmjs.org/@types/estree/-/estree-1.0.5.tgz"
   integrity sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==
 
+"@types/gradient-parser@^0.1.2":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@types/gradient-parser/-/gradient-parser-0.1.5.tgz#7b25d5f080f41f0d713207894c3f2f490155462a"
+  integrity sha512-r7K3NkJz3A95WkVVmjs0NcchhHstC2C/VIYNX4JC6tieviUNo774FFeOHjThr3Vw/WCeMP9kAT77MKbIRlO/4w==
+
 "@types/parse-json@^4.0.0":
   version "4.0.2"
   resolved "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.2.tgz"
@@ -2749,6 +2754,13 @@ picocolors@^1.0.0, picocolors@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/picocolors/-/picocolors-1.0.1.tgz"
   integrity sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==
+
+pixi-filters@^6.0.4:
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/pixi-filters/-/pixi-filters-6.0.4.tgz#e6a02730210ff438519d3a888a2fe1c8cdaa6c94"
+  integrity sha512-W9SjOTF4yo+v9t5YOBtsWhJoFLLRM6DsIk1C2YBNiQhdyX7J/5UIJtPlTMhZ7wQKoFUiyeUAaCzTEdmw/TVD6w==
+  dependencies:
+    "@types/gradient-parser" "^0.1.2"
 
 pixi.js@^8.1.6:
   version "8.1.6"
