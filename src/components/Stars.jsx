@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux'
 import { selectNav } from '../redux/selectors/nav.selector';
 
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { PixiPlugin } from "gsap/PixiPlugin";
 import * as PIXI from "pixi.js";
 
@@ -47,7 +46,6 @@ const randomizeStar = (star, initial = false, cameraZ = 0) => {
 }
 
 export const StarsWrapper = (props) => {
-
   const { selectedItem } = useSelector(selectNav)
   const update = useRef()
 
@@ -57,6 +55,7 @@ export const StarsWrapper = (props) => {
 
   const onInitialized = useCallback((updateFunc) => {
     update.current = updateFunc
+    //update.current({ selectedItem:location.pathname.split('/')[1] })
   }, [])
 
   return (
@@ -72,8 +71,8 @@ export const Stars = ({ onInitialized }) => {
   const stars = useRef([])
   const cameraZ = useRef(0)
   const speed = useRef(0)
-  const [warpSpeed, updateWarpSpeed] = useRebound(0, 2000)
-  const selectedItem = useRef(-1)
+  const [warpSpeed] = useRebound(0, 2000)
+  const selectedItem = useRef()
   const [starState] = useReducer(starReducer, initialStarState)
   const appRef = useRef();
 
@@ -84,17 +83,17 @@ export const Stars = ({ onInitialized }) => {
     if (!data) return;
     const app = appRef.current;
     const { selectedItem: newItem } = data;
-    if (selectedItem.current >= 0) {
-      gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3});
-      gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y:"+=5000" }, duration: .8, ease: "power2.inOut" });
+    if (selectedItem.current && selectedItem.current in planets.current) {
+      gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3 });
+      gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
     }
     gsap.to(planets.current[newItem].planetSprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
-    gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y:app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
+    gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
     selectedItem.current = newItem;
     //updateWarpSpeed(1);
     gsap.to(warpSpeed, { current: 1, duration: 1, delay: 0, ease: "power2.inOut" });
     gsap.to(warpSpeed, { current: 0, duration: .5, delay: 1.5, ease: "power2.outIn" });
-  }, []);
+  }, [warpSpeed]);
 
   //called on every frame of animation
   const updateStar = useCallback((star, initial, screenW, screenH, cameraZ = 0) => {
@@ -126,7 +125,6 @@ export const Stars = ({ onInitialized }) => {
   }, [starState]);
 
   const updateStars = useCallback((deltaTime = 0, app) => {
-    //console.log(deltaTime, app)
     let { baseSpeed } = starState;
     // Simple easing. This should be changed to proper easing function when used for real.
     speed.current += (warpSpeed.current - speed.current) / 20;
@@ -139,14 +137,13 @@ export const Stars = ({ onInitialized }) => {
   }, [starState, stars, updateStar, warpSpeed]);
 
   const onReady = (appRef) => {
-    initStars(appRef.current);
     initPlanets(appRef.current);
+    initStars(appRef.current);
   }
   const { updateTicker } = usePixiApp({ canvasRef, containerRef, onReady })
 
   const ticker = useCallback((app) => (time) => {
     if (!time || !app) return
-    //console.log(time.deltaTime, app);
     updateStars(time.deltaTime, app);
   }, [updateStars]);
 
@@ -168,28 +165,26 @@ export const Stars = ({ onInitialized }) => {
     })
   }, [updateStar, updateTicker, ticker, onInitialized, update]);
 
-  const planets = useRef([
-    { name: "planet-green", url: "./assets/planet-green.png" },
-    { name: "planet-red", url: "./assets/planet-red.png" },
-    { name: "planet-blue", url: "./assets/planet-blue.png" },
-    { name: "planet-orange", url: "./assets/planet-orange.png" },
-  ]);
-  
+  const planets = useRef({
+    experience: { planetSprite: null, active: false, url: "/assets/planet-green.png" },
+    about:      { planetSprite: null, active: false, url: "/assets/planet-red.png" },
+    interns:    { planetSprite: null, active: false, url: "/assets/planet-blue.png" },
+    contact:    { planetSprite: null, active: false, url: "/assets/planet-orange.png" }});
+
   const initPlanets = useCallback((app) => {
     appRef.current = app;
-    planets.current.forEach((planet) => {
-      Assets.load(planet.url).then((planetTexture) => {
-        const planetSprite = planet.planetSprite = new Sprite(planetTexture);
+    Object.values(planets.current).forEach((planetDef) => {
+      Assets.load(planetDef.url).then((planetTexture) => {
+        const planetSprite = planetDef.planetSprite = new Sprite(planetTexture);
         planetSprite.anchor.set(0.5);
         planetSprite.x = app.renderer.screen.width / 2;
         planetSprite.y = app.renderer.screen.height / 2;
         planetSprite.scale.set(0.2);
         planetSprite.alpha = 0;
-        planet.active = false;
+        planetDef.active = false;
         app.stage.addChild(planetSprite);
       })
     });
-    planets.current[0].active = true;
   }, []);
 
   return (

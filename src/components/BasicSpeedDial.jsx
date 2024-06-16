@@ -5,6 +5,7 @@ import { StyledBasicSpeedDial } from './basicSpeedDial.style'
 import { useDispatch } from 'react-redux'
 import { selectItem } from '../redux/reducers/nav.reducer.js'
 import { ContactMail, Engineering, PeopleAltOutlined, PersonPin } from '@mui/icons-material'
+import { Link } from 'react-router-dom'
 
 const actions = [
   { icon: <Engineering />, name: 'Experience' },
@@ -18,9 +19,8 @@ export function BasicSpeedDial() {
   const dispatch = useDispatch()
   
   const handleClick = (e) => {
-    console.log('asdf:', e)
     const action = e.currentTarget.getAttribute('aria-label')
-    const index = e.currentTarget.getAttribute('data-index')
+    //const index = e.currentTarget.getAttribute('data-index')
 
     switch (action) {
       case 'Experience':
@@ -38,7 +38,7 @@ export function BasicSpeedDial() {
       default:
         console.log('No action selected')
     }
-    dispatch(selectItem(index))
+    dispatch(selectItem(action.toLowerCase()))
   }
 
   return (
@@ -50,6 +50,8 @@ export function BasicSpeedDial() {
       >
         {actions.map((action, i) => (
           <SpeedDialAction
+            component={Link}
+            to={action.name.toLowerCase()}
             key={action.name}
             icon={action.icon}
             tooltipTitle={action.name}
