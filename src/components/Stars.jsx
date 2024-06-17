@@ -1,15 +1,17 @@
- import { Box } from '@mui/material'
+import { Box } from '@mui/material'
 import React, { useCallback, useEffect, useReducer, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { usePixiApp } from '../hooks/pixi.hook'
 import { Assets, Sprite } from 'pixi.js'
 import { useSelector } from 'react-redux'
 import { selectNav } from '../redux/selectors/nav.selector';
-
 import gsap from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
 import * as PIXI from "pixi.js";
 import { AnimatedPlanet } from './pixi/AnimatedPlanet'
+
+gsap.registerPlugin(PixiPlugin);
+PixiPlugin.registerPIXI(PIXI);
 
 const initialStarState = {
   fov: 20,
@@ -50,12 +52,14 @@ export const StarsWrapper = (props) => {
   const update = useRef()
 
   useEffect(() => {
+    console.log('update:', selectedItem)
     if (update.current && selectedItem) update.current({ selectedItem })
   }, [selectedItem])
 
   const onInitialized = useCallback((updateFunc) => {
+    console.log('onInit', location.pathname.split('/')[1])
     update.current = updateFunc
-    //update.current({ selectedItem:location.pathname.split('/')[1] })
+    update.current({ selectedItem: location.pathname.split('/')[1] })
   }, [])
 
   return (
@@ -71,27 +75,28 @@ export const Stars = ({ onInitialized }) => {
   const stars = useRef([])
   const cameraZ = useRef(0)
   const speed = useRef(0)
-  const [warpSpeed] = useRef(2000)
+  const warpSpeed = useRef(2000)
   const selectedItem = useRef()
   const [starState] = useReducer(starReducer, initialStarState)
   const appRef = useRef();
-
-  gsap.registerPlugin(PixiPlugin);
-  PixiPlugin.registerPIXI(PIXI);
 
   const update = useCallback((data) => {
     if (!data) return;
     const app = appRef.current;
     const { selectedItem: newItem } = data;
-    if (selectedItem.current && selectedItem.current in planets.current) {
-      planets.current[selectedItem.current].sprite.active = false
-      gsap.to(planets.current[selectedItem.current].sprite, { pixi: { alpha: 0 }, duration: .3, delay: .3 });
-      gsap.fromTo(planets.current[selectedItem.current].sprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
+    const planet = planets.current[selectedItem.current]?.sprite
+    if (selectedItem.current && planet) {
+      planet.active = false
+      gsap.to(planet, { pixi: { alpha: 0 }, duration: .3, delay: .3 });
+      gsap.fromTo(planet, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
     }
-    planets.current[newItem].sprite.active = true
-    gsap.to(planets.current[newItem].sprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
-    gsap.fromTo(planets.current[newItem].sprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
-    selectedItem.current = newItem;
+    const nextPlanet = planets.current[newItem]?.sprite
+    if (nextPlanet) {
+      nextPlanet.active = true
+      gsap.to(nextPlanet, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
+      gsap.fromTo(nextPlanet, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
+      selectedItem.current = newItem;
+    }
 
     gsap.to(warpSpeed, { current: 1, duration: 1, delay: 0, ease: "power2.inOut" });
     gsap.to(warpSpeed, { current: 0, duration: .5, delay: 1.5, ease: "power2.outIn" });
@@ -139,8 +144,8 @@ export const Stars = ({ onInitialized }) => {
   }, [starState, stars, updateStar, warpSpeed]);
 
   const onReady = (appRef) => {
-    initPlanets(appRef.current);
     initStars(appRef.current);
+    initPlanets(appRef.current);
   }
   const { updateTicker } = usePixiApp({ canvasRef, containerRef, onReady })
 
@@ -150,7 +155,9 @@ export const Stars = ({ onInitialized }) => {
   }, [updateStars]);
 
   const initStars = useCallback((app) => {
-    Assets.load("https://pixijs.com/assets/star.png").then((starTexture) => {
+    console.log('init stars')
+    const load = async () => {
+      const starTexture = await Assets.load("https://pixijs.com/assets/star.png")
       // Create the stars
       for (let i = 0; i < 100; i++) {
         const star = { sprite: new Sprite(starTexture), z: 0, x: 0, y: 0 }
@@ -161,29 +168,35 @@ export const Stars = ({ onInitialized }) => {
         updateStar(star, true, app.renderer.screen.width, app.renderer.screen.height);
         stars.current.push(star);
       }
-
-      updateTicker(ticker(app));
-      onInitialized(update);
-    })
-  }, [updateStar, updateTicker, ticker, onInitialized, update]);
+    }
+    load()
+  }, [updateStar]);
 
   const planets = useRef({
-    experience: { planetSprite: null, rotates: true, url: "/assets/white-dunes.png" },
-    about:      { planetSprite: null, rotates: true, url: "/assets/mars.png" },
-    interns:    { planetSprite: null, rotates: true, url: "/assets/gas.png" },
-    contact:    { planetSprite: null, rotates: true, url: "/assets/white-sand.png" }});
+    experience: { rotates: true, url: "/assets/white-dunes.png" },
+    about: { rotates: true, url: "/assets/mars.jpeg" },
+    interns: { rotates: true, url: "/assets/gas.jpeg" },
+    contact: { rotates: true, url: "/assets/white-sand.png" }
+  });
 
   const initPlanets = useCallback((app) => {
     appRef.current = app;
-    planets.current.forEach((planetDef) => {
-      Assets.load(planetDef.url).then((texture) => {
+    const load = async () => {
+      const defs = Object.values(planets.current)
+      for (let i = 0; i < defs.length; i++) {
+        const planetDef = defs[i]
+        const texture = await Assets.load(planetDef.url)
         planetDef.sprite = new AnimatedPlanet({ texture, app, ...planetDef })
-      });
-    });
-  }, []);
+      }
+
+      updateTicker(ticker(app));
+      onInitialized(update);
+    }
+    load()
+  }, [updateTicker, ticker, onInitialized, update]);
 
   return (
-    <Box ref={containerRef} className="pixi-container">
+    <Box ref={containerRef} className="pixi-container" position="absolute">
       <canvas ref={canvasRef} />
     </Box>
   )

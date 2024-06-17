@@ -1,13 +1,13 @@
 import { Box, styled } from "@mui/material"
 
 export const StyledApp = styled(Box)(
-  ({ theme }) => `
-  .pixi-container {
+  () => `
+  .pixi-container, .main-content {
     position:absolute;
     top:0;
     left:0;
-    width:100vw;
-    height:100vh;
+    bottom:0;
+    right:0;
     overflow:hidden;
   }
 `,

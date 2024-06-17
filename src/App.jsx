@@ -7,15 +7,20 @@ import {
   createBrowserRouter,
   Outlet,
   RouterProvider,
-  useLocation,
 } from "react-router-dom";
 import "./index.css";
+import { Box } from '@mui/material'
 
 let router = createBrowserRouter([
   {
     path: "/",
     Component: () => {
-      return <BasicSpeedDial />
+      return (
+        <Box className="main-content">
+          <Outlet />
+          <BasicSpeedDial />
+        </Box>
+      )
     },
     children: [
       {
@@ -56,17 +61,11 @@ if (import.meta.hot) {
   import.meta.hot.dispose(() => router.dispose());
 }
 
-function CurrentRoute() {
-  const location = useLocation();
-  console.log("loc: ", location)
-  return <div>Current Route: {location.pathname}</div>;
-}
-
 function App() {
   return (
     <StyledApp>
       <Stars />
-      <Outlet />
+      <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
     </StyledApp>
   )
 }
@@ -76,9 +75,6 @@ function Wrapper() {
   return (
     <Provider store={store}>
       <App />
-      <RouterProvider router={router} fallbackElement={<p>Loading...</p>} >
-        <CurrentRoute />
-      </RouterProvider>
     </Provider>
   )
 }
