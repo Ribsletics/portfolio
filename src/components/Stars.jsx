@@ -182,11 +182,14 @@ export const Stars = ({ onInitialized }) => {
   const initPlanets = useCallback((app) => {
     appRef.current = app;
     const load = async () => {
+
+      const glowTexture = await Assets.load('/assets/glow.png')
+      const shadowTexture = await Assets.load('/assets/shadow.png')
       const defs = Object.values(planets.current)
       for (let i = 0; i < defs.length; i++) {
         const planetDef = defs[i]
         const texture = await Assets.load(planetDef.url)
-        planetDef.sprite = new AnimatedPlanet({ texture, app, ...planetDef })
+        planetDef.sprite = new AnimatedPlanet({ texture, glowTexture, shadowTexture, app, ...planetDef })
       }
 
       updateTicker(ticker(app));

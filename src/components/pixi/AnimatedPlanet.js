@@ -1,9 +1,9 @@
 import gsap from "gsap";
-import { Assets, Container, Graphics, Sprite, TilingSprite } from "pixi.js";
+import { Container, Graphics, Sprite, TilingSprite } from "pixi.js";
 
 export class AnimatedPlanet extends Container {
   #active = false
-  constructor({ texture, revSpeed = 15, app, rotates }) {
+  constructor({ texture, glowTexture, shadowTexture, revSpeed = 15, app, rotates }) {
     super()
     this.revSpeed = revSpeed
     this.rotates = rotates
@@ -12,14 +12,11 @@ export class AnimatedPlanet extends Container {
     this.scale.set(0.2)
     this.alpha = 0
 
-    const glow = this.glow = new Sprite()
+    const glow = this.glow = new Sprite(glowTexture)
     glow.width = 1480
     glow.height = 1480
     glow.anchor.set(0.5)
     this.addChild(glow)
-    Assets.load('/assets/glow.png').then((t) => {
-      glow.texture = t
-    })
 
     let img = this.img = new TilingSprite(texture)
     img.width = rotates ? 2880 : 1440
@@ -32,14 +29,11 @@ export class AnimatedPlanet extends Container {
     mask.fill({ color: 0xffffff })
     this.addChild(mask)
 
-    const shadow = this.shadow = new Sprite()
+    const shadow = this.shadow = new Sprite(shadowTexture)
     shadow.width = 1440
     shadow.height = 1440
     shadow.anchor.set(0.5)
     this.addChild(shadow)
-    Assets.load('/assets/shadow.png').then((t) => {
-      shadow.texture = t
-    })
 
     img.mask = mask
     app.stage.addChild(this)
