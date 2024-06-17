@@ -20,11 +20,11 @@ export const usePixiApp = ({ onReady, canvasRef, containerRef }) => {
 
   const updateTicker = useCallback((nextTicker) => {
     if (!app?.current || !nextTicker) return
-    if (ticker) app.current.ticker.remove(ticker)
+    if (ticker.current) app.current.ticker.remove(ticker.current);
 
-    app.current.ticker.add(nextTicker)
-    ticker.current = nextTicker
-  }, [app, ticker])
+    app.current.ticker.add(nextTicker);
+    ticker.current = nextTicker;
+  }, [app, ticker]);
 
   useEffect(() => {
     if (!canvasRef?.current || !containerRef?.current) return
