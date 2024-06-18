@@ -144,10 +144,10 @@ export const Stars = ({ onInitialized }) => {
   }, [starState, stars, updateStar, warpSpeed]);
 
   const onReady = (appRef) => {
-    initStars(appRef.current);
+    //initStars(appRef.current);
     initPlanets(appRef.current);
   }
-  const { updateTicker } = usePixiApp({ canvasRef, containerRef, onReady })
+  const { updateTicker } = usePixiApp({ canvasRef, containerRef, onReady, width: 960, height: 540 })
 
   const ticker = useCallback((app) => (time) => {
     if (!time || !app) return
@@ -194,6 +194,7 @@ export const Stars = ({ onInitialized }) => {
 
       updateTicker(ticker(app));
       onInitialized(update);
+      app.start();
     }
     load()
   }, [updateTicker, ticker, onInitialized, update]);

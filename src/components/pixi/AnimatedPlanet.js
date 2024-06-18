@@ -3,7 +3,8 @@ import { Container, Graphics, Sprite, TilingSprite } from "pixi.js";
 
 export class AnimatedPlanet extends Container {
   #active = false
-  constructor({ texture, glowTexture, shadowTexture, revSpeed = 15, app, rotates }) {
+  #tween = null
+  constructor({ texture, glowTexture, shadowTexture, revSpeed = 5, app, rotates, angle = 45 }) {
     super()
     this.revSpeed = revSpeed
     this.rotates = rotates
@@ -11,8 +12,9 @@ export class AnimatedPlanet extends Container {
     this.y = app.renderer.screen.height / 2
     this.scale.set(0.2)
     this.alpha = 0
+    this.angle = angle
 
-    const glow = this.glow = new Sprite(glowTexture)
+    const glow = new Sprite(glowTexture)
     glow.width = 1480
     glow.height = 1480
     glow.anchor.set(0.5)
@@ -29,7 +31,7 @@ export class AnimatedPlanet extends Container {
     mask.fill({ color: 0xffffff })
     this.addChild(mask)
 
-    const shadow = this.shadow = new Sprite(shadowTexture)
+    const shadow = new Sprite(shadowTexture)
     shadow.width = 1440
     shadow.height = 1440
     shadow.anchor.set(0.5)
@@ -39,8 +41,8 @@ export class AnimatedPlanet extends Container {
     app.stage.addChild(this)
 
     this.tweener = 0
-    gsap.to(this, {
-      tweener: 1, duration: this.revSpeed, ease: 'none', repeat: -1, onUpdate: this.update
+    this.#tween = gsap.to(this, {
+      tweener: 1, duration: 1, ease: 'none', repeat: -1, paused: !this.rotates, onUpdate: this.update
     })
   }
 
@@ -48,6 +50,7 @@ export class AnimatedPlanet extends Container {
     return this.#active
   }
   set active(value) {
+    this.#tween.paused(!value && !this.rotates)
     this.#active = value
   }
 

@@ -1,7 +1,7 @@
 import { Application } from "pixi.js"
 import { useCallback, useEffect, useRef } from "react"
 
-export const usePixiApp = ({ onReady, canvasRef, containerRef }) => {
+export const usePixiApp = ({ onReady, canvasRef, containerRef, width, height }) => {
   const app = useRef()
   const ticker = useRef()
 
@@ -11,12 +11,12 @@ export const usePixiApp = ({ onReady, canvasRef, containerRef }) => {
 
     const initPixi = async () => {
       // Initialize the application
-      await pixiApp.init({ resizeTo: container, canvas })
+      await pixiApp.init({ autoStart: false, width, height, canvas })
       app.current = pixiApp
       onReady(app)
     }
     initPixi()
-  }, [onReady])
+  }, [onReady, width, height])
 
   const updateTicker = useCallback((nextTicker) => {
     if (!app?.current || !nextTicker) return
@@ -27,8 +27,19 @@ export const usePixiApp = ({ onReady, canvasRef, containerRef }) => {
   }, [app, ticker]);
 
   useEffect(() => {
-    if (!canvasRef?.current || !containerRef?.current) return
-    init(canvasRef.current, containerRef.current)
+    if (app?.current?.renderer.context?.extensions) {
+      app.current.renderer.context.extensions.loseContext = null;
+    }
+    if (canvasRef?.current && containerRef?.current) {
+      init(canvasRef.current, containerRef.current)
+      return () => {
+        console.log('unmount!')
+        if (app?.current) {
+          app.current.destroy()
+          app.current = null
+        }
+      }
+    }
   }, [init, canvasRef, containerRef])
 
   return { app: app.current, updateTicker }
