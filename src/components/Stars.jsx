@@ -55,7 +55,7 @@ export const StarsWrapper = (props) => {
 
   const onInitialized = useCallback((updateFunc) => {
     update.current = updateFunc
-    //update.current({ selectedItem:location.pathname.split('/')[1] })
+    update.current({ selectedItem:location.pathname.split('/')[1] })
   }, [])
 
   return (
@@ -83,12 +83,16 @@ export const Stars = ({ onInitialized }) => {
     if (!data) return;
     const app = appRef.current;
     const { selectedItem: newItem } = data;
+    console.log("planets: ", planets);
+    console.log("data: ", data.selectedItem);
     if (selectedItem.current && selectedItem.current in planets.current) {
       gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3 });
       gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
     }
-    gsap.to(planets.current[newItem].planetSprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
-    gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
+    if (planets.current[newItem].planetSprite) {
+      gsap.to(planets.current[newItem].planetSprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
+      gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
+    }
     selectedItem.current = newItem;
     //updateWarpSpeed(1);
     gsap.to(warpSpeed, { current: 1, duration: 1, delay: 0, ease: "power2.inOut" });
@@ -136,34 +140,36 @@ export const Stars = ({ onInitialized }) => {
     //starDispatch({ payload: { stars, speed, warpSpeed, cameraZ } })
   }, [starState, stars, updateStar, warpSpeed]);
 
-  const onReady = (appRef) => {
-    initPlanets(appRef.current);
-    initStars(appRef.current);
-  }
-  const { updateTicker } = usePixiApp({ canvasRef, containerRef, onReady })
-
   const ticker = useCallback((app) => (time) => {
     if (!time || !app) return
     updateStars(time.deltaTime, app);
   }, [updateStars]);
 
   const initStars = useCallback((app) => {
-    Assets.load("https://pixijs.com/assets/star.png").then((starTexture) => {
-      // Create the stars
-      for (let i = 0; i < 1000; i++) {
-        const star = { sprite: new Sprite(starTexture), z: 0, x: 0, y: 0 }
+    return new Promise((resolve, reject) => {
+      try {
+        appRef.current = app;
+        const load = async () => {
+          const starTexture = await Assets.load("https://pixijs.com/assets/star.png")
+          // Create the stars
+          for (let i = 0; i < 1000; i++) {
+            const star = { sprite: new Sprite(starTexture), z: 0, x: 0, y: 0 }
 
-        star.sprite.anchor.x = 0.5;
-        star.sprite.anchor.y = .8;
-        app.stage.addChild(star.sprite);
-        updateStar(star, true, app.renderer.screen.width, app.renderer.screen.height);
-        stars.current.push(star);
+            star.sprite.anchor.x = 0.5;
+            star.sprite.anchor.y = .8;
+            appRef.current.stage.addChild(star.sprite);
+            updateStar(star, true, app.renderer.screen.width, app.renderer.screen.height);
+            stars.current.push(star);
+          }
+          resolve();
+        }
+        load();
+      } catch (error) {
+        console.error("Error: ", error);
+        reject(error);
       }
-
-      updateTicker(ticker(app));
-      onInitialized(update);
     })
-  }, [updateStar, updateTicker, ticker, onInitialized, update]);
+  }, [ updateStar ]);
 
   const planets = useRef({
     experience: { planetSprite: null, active: false, url: "/assets/planet-green.png" },
@@ -172,20 +178,42 @@ export const Stars = ({ onInitialized }) => {
     contact:    { planetSprite: null, active: false, url: "/assets/planet-orange.png" }});
 
   const initPlanets = useCallback((app) => {
-    appRef.current = app;
-    Object.values(planets.current).forEach((planetDef) => {
-      Assets.load(planetDef.url).then((planetTexture) => {
-        const planetSprite = planetDef.planetSprite = new Sprite(planetTexture);
-        planetSprite.anchor.set(0.5);
-        planetSprite.x = app.renderer.screen.width / 2;
-        planetSprite.y = app.renderer.screen.height / 2;
-        planetSprite.scale.set(0.2);
-        planetSprite.alpha = 0;
-        planetDef.active = false;
-        app.stage.addChild(planetSprite);
-      })
-    });
-  }, []);
+    return new Promise((resolve, reject) => {
+      try {
+        appRef.current = app;
+        console.log("appRef.current: ", appRef.current);
+        const load = async () => {
+          const defs = Object.values(planets.current)
+          for (let i = 0; i < defs.length; i++) {
+            const texture = await Assets.load(defs[i].url)
+            defs[i].planetSprite = new Sprite(texture);
+            defs[i].planetSprite.anchor.set(0.5);
+            defs[i].planetSprite.x = app.renderer.screen.width / 2;
+            defs[i].planetSprite.y = app.renderer.screen.height / 2;
+            defs[i].planetSprite.scale.set(0.2);
+            defs[i].planetSprite.alpha = 0;
+            defs[i].active = false;
+            appRef.current.stage.addChild(defs[i].planetSprite);
+            console.log("defs[i].planetSprite: ", defs[i].planetSprite);
+          }
+          resolve();
+        }
+        load();
+      } catch (error) {
+        console.error("Error: ", error);
+        reject(error);
+      }
+    })
+  }, [appRef]);
+
+  const onReady = async (appRef) => {
+    await initStars(appRef.current);
+    await initPlanets(appRef.current);
+    updateTicker(ticker(appRef.current));
+    onInitialized(update);
+  }
+
+  const { updateTicker } = usePixiApp({ canvasRef, containerRef, onReady })
 
   return (
     <Box ref={containerRef} className="pixi-container">
