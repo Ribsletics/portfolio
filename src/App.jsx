@@ -10,43 +10,37 @@ import {
   useLocation,
 } from "react-router-dom";
 import "./index.css";
+import Page from './components/Page.jsx'
 
 let router = createBrowserRouter([
   {
     path: "/",
     Component: () => {
-      return <BasicSpeedDial />
+      return (<>
+        <Outlet />
+        <BasicSpeedDial />
+      </>)
     },
     children: [
       {
         index: true,
-        Component: () => {
-          return <h1>Home</h1>
-        },
+        element: <Page name="home" className="home" />
       },
       {
         path: "experience",
-        Component: () => {
-          return <h1>Experience</h1>
-        },
+        element: <Page name="experience" className="experience" />  
       },
       {
         path: "about",
-        Component: () => {
-          return <h1>About</h1>
-        },
+        element: <Page name="about" className="about" />  
       },
       {
         path: "interns",
-        Component: () => {
-          return <h1>Interns</h1>
-        },
+        element: <Page name="interns" className="interns" />  
       },
       {
         path: "contact",
-        Component: () => {
-          return <h1>Contact</h1>
-        },
+        element: <Page name="contact" className="contact" />  
       },
     ],
   },
@@ -58,7 +52,7 @@ if (import.meta.hot) {
 
 function CurrentRoute() {
   const location = useLocation();
-  console.log("loc: ", location)
+  //console.log("loc: ", location)
   return <div>Current Route: {location.pathname}</div>;
 }
 
@@ -66,7 +60,6 @@ function App() {
   return (
     <StyledApp>
       <Stars />
-      <Outlet />
     </StyledApp>
   )
 }
