@@ -10,6 +10,7 @@ import { selectNav } from '../redux/selectors/nav.selector';
 import gsap from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
 import * as PIXI from "pixi.js";
+import { useLocation } from 'react-router-dom'
 
 const initialStarState = {
   fov: 20,
@@ -46,14 +47,16 @@ const randomizeStar = (star, initial = false, cameraZ = 0) => {
 }
 
 export const StarsWrapper = (props) => {
-  const { selectedItem } = useSelector(selectNav)
+  const { location:routeLocation } = useSelector(selectNav)
   const update = useRef()
 
   useEffect(() => {
-    if (update.current && selectedItem) update.current({ selectedItem })
-  }, [selectedItem])
+    if (!routeLocation) return
+    if (update.current) update.current({ selectedItem:routeLocation.pathname.split('/')[1] })
+  }, [routeLocation])
 
   const onInitialized = useCallback((updateFunc) => {
+    if (!location) return
     update.current = updateFunc
     update.current({ selectedItem:location.pathname.split('/')[1] })
   }, [])
@@ -83,13 +86,13 @@ export const Stars = ({ onInitialized }) => {
     if (!data) return;
     const app = appRef.current;
     const { selectedItem: newItem } = data;
-    console.log("planets: ", planets);
-    console.log("data: ", data.selectedItem);
+    // console.log("planets: ", planets);
+    // console.log("data: ", data.selectedItem);
     if (selectedItem.current && selectedItem.current in planets.current) {
       gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3 });
       gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
     }
-    if (planets.current[newItem].planetSprite) {
+    if (planets.current[newItem]?.planetSprite) {
       gsap.to(planets.current[newItem].planetSprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
       gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
     }
