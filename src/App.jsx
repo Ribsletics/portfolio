@@ -15,12 +15,10 @@ import Page from './components/Page.jsx'
 let router = createBrowserRouter([
   {
     path: "/",
-    Component: () => {
-      return (<>
+    element: <>
         <Outlet />
         <BasicSpeedDial />
-      </>)
-    },
+      </>,
     children: [
       {
         index: true,
