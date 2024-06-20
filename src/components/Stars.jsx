@@ -10,6 +10,7 @@ import { selectNav } from '../redux/selectors/nav.selector';
 import gsap from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
 import * as PIXI from "pixi.js";
+import { AnimatedPlanet } from './animatedPlanet/AnimatedPlanet'
 
 const initialStarState = {
   fov: 20,
@@ -46,18 +47,18 @@ const randomizeStar = (star, initial = false, cameraZ = 0) => {
 }
 
 export const StarsWrapper = (props) => {
-  const { location:routeLocation } = useSelector(selectNav)
+  const { location: routeLocation } = useSelector(selectNav)
   const update = useRef()
 
   useEffect(() => {
     if (!routeLocation) return
-    if (update.current) update.current({ selectedItem:routeLocation.pathname.split('/')[1] })
+    if (update.current) update.current({ selectedItem: routeLocation.pathname.split('/')[1] })
   }, [routeLocation])
 
   const onInitialized = useCallback((updateFunc) => {
     if (!location) return
     update.current = updateFunc
-    update.current({ selectedItem:location.pathname.split('/')[1] })
+    update.current({ selectedItem: location.pathname.split('/')[1] })
   }, [])
 
   return (
@@ -87,19 +88,23 @@ export const Stars = ({ onInitialized }) => {
   const update = useCallback((data) => {
     if (!data) return;
     const app = appRef.current;
-    const { selectedItem: newItem } = data;
+    const { selectedItem: newItem } = data
     if (selectedItem.current && selectedItem.current in planets.current) {
-      gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
-      gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3, overwrite:false });
+      const planet = planets.current[selectedItem.current].sprite
+      gsap.fromTo(planet, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
+      gsap.to(planet, { pixi: { alpha: 0 }, duration: .3, delay: .3, overwrite: false });
+      planet.active = false
     }
-    if (planets.current[newItem]?.planetSprite) {
-      gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { alpha: 0 }}, {pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
-      gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9, overwrite:false });
+    if (planets.current[newItem]?.sprite) {
+      const nextPlanet = planets.current[newItem].sprite 
+      gsap.fromTo(nextPlanet, { pixi: { alpha: 0 } }, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
+      gsap.fromTo(nextPlanet, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9, overwrite: false });
+      nextPlanet.active = true
     }
     selectedItem.current = newItem;
     //updateWarpSpeed(1);
     gsap.to(warpSpeed, { current: 1, duration: 1, delay: 0, ease: "power2.inOut" });
-    gsap.to(warpSpeed, { current: 0, duration: .5, delay: 1.5, ease: "power2.outIn", overwrite:false });
+    gsap.to(warpSpeed, { current: 0, duration: .5, delay: 1.5, ease: "power2.outIn", overwrite: false });
   }, [warpSpeed]);
 
   //called on every frame of animation
@@ -172,32 +177,27 @@ export const Stars = ({ onInitialized }) => {
         reject(error);
       }
     })
-  }, [ updateStar ]);
+  }, [updateStar]);
 
   const planets = useRef({
-    experience: { planetSprite: null, active: false, url: "/assets/planet-green.png" },
-    about:      { planetSprite: null, active: false, url: "/assets/planet-red.png" },
-    interns:    { planetSprite: null, active: false, url: "/assets/planet-blue.png" },
-    contact:    { planetSprite: null, active: false, url: "/assets/planet-orange.png" }});
+    experience: { speed: -10, angle: 0, rotates: true, url: "/assets/white-dunes.png" },
+    about: { speed: 20, angle: -15, rotates: true, url: "/assets/mars.jpeg" },
+    interns: { speed: 25, angle: 30, rotates: true, url: "/assets/gas.jpeg" },
+    contact: { speed: -15, angle: -45, rotates: true, url: "/assets/white-sand.png" }
+  });
 
   const initPlanets = useCallback((app) => {
     return new Promise((resolve, reject) => {
       try {
         appRef.current = app;
-        console.log("appRef.current: ", appRef.current);
         const load = async () => {
-          const defs = Object.values(planets.current)
+          const glowTexture = await Assets.load('/assets/glow.png')
+          const shadowTexture = await Assets.load('/assets/shadow.png')
+          const defs = Object.entries(planets.current)
           for (let i = 0; i < defs.length; i++) {
-            const texture = await Assets.load(defs[i].url)
-            defs[i].planetSprite = new Sprite(texture);
-            defs[i].planetSprite.anchor.set(0.5);
-            defs[i].planetSprite.x = app.renderer.screen.width / 2;
-            defs[i].planetSprite.y = app.renderer.screen.height / 2;
-            defs[i].planetSprite.scale.set(0.2);
-            defs[i].planetSprite.alpha = 0;
-            defs[i].active = false;
-            appRef.current.stage.addChild(defs[i].planetSprite);
-            console.log("defs[i].planetSprite: ", defs[i].planetSprite);
+            const [id, def] = defs[i]
+            const texture = await Assets.load(def.url)
+            def.sprite = new AnimatedPlanet({ texture, glowTexture, shadowTexture, app, id, ...def })
           }
           resolve();
         }
@@ -207,7 +207,7 @@ export const Stars = ({ onInitialized }) => {
         reject(error);
       }
     })
-  }, [appRef]);
+  }, []);
 
   const onReady = async (appRef) => {
     await initStars(appRef.current);
