@@ -10,7 +10,6 @@ import { selectNav } from '../redux/selectors/nav.selector';
 import gsap from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
 import * as PIXI from "pixi.js";
-import { useLocation } from 'react-router-dom'
 
 const initialStarState = {
   fov: 20,
@@ -82,24 +81,25 @@ export const Stars = ({ onInitialized }) => {
   gsap.registerPlugin(PixiPlugin);
   PixiPlugin.registerPIXI(PIXI);
 
+  // Set overwrite globally for all tweens
+  gsap.defaults({ overwrite: true });
+
   const update = useCallback((data) => {
     if (!data) return;
     const app = appRef.current;
     const { selectedItem: newItem } = data;
-    // console.log("planets: ", planets);
-    // console.log("data: ", data.selectedItem);
     if (selectedItem.current && selectedItem.current in planets.current) {
-      gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3 });
       gsap.fromTo(planets.current[selectedItem.current].planetSprite, { pixi: { scale: .5 } }, { pixi: { scale: 6, y: "+=5000" }, duration: .8, ease: "power2.inOut" });
+      gsap.to(planets.current[selectedItem.current].planetSprite, { pixi: { alpha: 0 }, duration: .3, delay: .3, overwrite:false });
     }
     if (planets.current[newItem]?.planetSprite) {
-      gsap.to(planets.current[newItem].planetSprite, { pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
-      gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9 });
+      gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { alpha: 0 }}, {pixi: { alpha: 1 }, duration: .3, delay: 1.9 });
+      gsap.fromTo(planets.current[newItem].planetSprite, { pixi: { scale: .2, y: app.renderer.screen.height / 2 } }, { pixi: { scale: .5 }, duration: .8, delay: 1.9, overwrite:false });
     }
     selectedItem.current = newItem;
     //updateWarpSpeed(1);
     gsap.to(warpSpeed, { current: 1, duration: 1, delay: 0, ease: "power2.inOut" });
-    gsap.to(warpSpeed, { current: 0, duration: .5, delay: 1.5, ease: "power2.outIn" });
+    gsap.to(warpSpeed, { current: 0, duration: .5, delay: 1.5, ease: "power2.outIn", overwrite:false });
   }, [warpSpeed]);
 
   //called on every frame of animation
