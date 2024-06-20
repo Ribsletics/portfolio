@@ -22,27 +22,10 @@ export function BasicSpeedDial() {
   useEffect(() => {
     dispatch(setLocation(location))
   }, [dispatch, location])
-  
+
   const handleClick = (e) => {
     const action = e.currentTarget.getAttribute('aria-label')
     //const index = e.currentTarget.getAttribute('data-index')
-
-    switch (action) {
-      case 'Experience':
-        console.log('Experience...')
-        break
-      case 'About':
-        console.log('About...')
-        break
-      case 'Interns':
-        console.log('Interns...')
-        break
-      case 'Contact':
-        console.log('Contact...')
-        break
-      default:
-        console.log('No action selected')
-    }
     dispatch(selectItem(action.toLowerCase()))
   }
 
