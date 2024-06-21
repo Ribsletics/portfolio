@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import store from './redux/store.js'
 import Stars from './components/Stars.jsx'
 import {
-  createBrowserRouter,
+  createHashRouter,
   Outlet,
   RouterProvider,
   useLocation,
@@ -12,7 +12,7 @@ import {
 import "./index.css";
 import Page from './components/Page.jsx'
 
-let router = createBrowserRouter([
+let router = createHashRouter([
   {
     path: "/",
     element: <>
