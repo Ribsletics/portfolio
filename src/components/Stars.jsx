@@ -48,16 +48,20 @@ const randomizeStar = (star, initial = false, cameraZ = 0) => {
 export const StarsWrapper = (props) => {
   const { location:routeLocation } = useSelector(selectNav)
   const update = useRef()
+  const routePathname = useRef()
 
   useEffect(() => {
     if (!routeLocation) return
-    if (update.current) update.current({ selectedItem:routeLocation.pathname.split('/')[1] })
+    //console.log("routeLocation: ", routeLocation.pathname)
+    routePathname.current = routeLocation.pathname.split('/')[1]
+    if (update.current) update.current({ selectedItem:routePathname.current })
   }, [routeLocation])
 
   const onInitialized = useCallback((updateFunc) => {
     if (!location) return
+    // console.log("location: ", location.pathname)
     update.current = updateFunc
-    update.current({ selectedItem:location.pathname.split('/')[1] })
+    update.current({ selectedItem:routePathname.current })
   }, [])
 
   return (
@@ -184,7 +188,6 @@ export const Stars = ({ onInitialized }) => {
     return new Promise((resolve, reject) => {
       try {
         appRef.current = app;
-        console.log("appRef.current: ", appRef.current);
         const load = async () => {
           const defs = Object.values(planets.current)
           for (let i = 0; i < defs.length; i++) {
@@ -197,7 +200,6 @@ export const Stars = ({ onInitialized }) => {
             defs[i].planetSprite.alpha = 0;
             defs[i].active = false;
             appRef.current.stage.addChild(defs[i].planetSprite);
-            console.log("defs[i].planetSprite: ", defs[i].planetSprite);
           }
           resolve();
         }

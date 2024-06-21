@@ -50,7 +50,6 @@ if (import.meta.hot) {
 
 function CurrentRoute() {
   const location = useLocation();
-  //console.log("loc: ", location)
   return <div>Current Route: {location.pathname}</div>;
 }
 
