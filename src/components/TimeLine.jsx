@@ -40,10 +40,6 @@ export default function TimeLine() {
       sx={{position:"absolute",
            bottom:0,
            left:0,
-           border: 2, 
-           borderColor: '#7e00ff',
-           bgcolor: '#7e00ff29',
-           borderRadius: 4,
            pt: 4}}>
       <Stack direction="column" spacing={2}>
         <ThemeProvider theme={theme}>
