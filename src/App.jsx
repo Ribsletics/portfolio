@@ -11,34 +11,52 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import Page from './components/Page.jsx'
+import Home from './components/pages/Home.jsx'
+import Experience from './components/pages/Experience.jsx'
+import About from './components/pages/About.jsx'
+import Interns from './components/pages/Interns.jsx'
+import Contact from './components/pages/Contact.jsx'
+import TimeLine from './components/TimeLine.jsx'
 
+//using Hash Router for github pages
 let router = createHashRouter([
   {
     path: "/",
     element: <>
-        <Outlet />
-        <BasicSpeedDial />
-      </>,
+              <Outlet />
+              <BasicSpeedDial />
+              <TimeLine />
+             </>,
     children: [
       {
         index: true,
-        element: <Page name="home" className="home" />
+        element:<Page>
+                  <Home />
+                </Page>
       },
       {
         path: "experience",
-        element: <Page name="experience" className="experience" />  
+        element:<Page>
+                  <Experience />
+                </Page> 
       },
       {
         path: "about",
-        element: <Page name="about" className="about" />  
+        element:<Page>
+                  <About />
+                </Page>
       },
       {
         path: "interns",
-        element: <Page name="interns" className="interns" />  
+        element:<Page>
+                  <Interns />
+                </Page>
       },
       {
         path: "contact",
-        element: <Page name="contact" className="contact" />  
+        element:<Page>
+                  <Contact />
+                </Page>
       },
     ],
   },
@@ -54,9 +72,10 @@ function CurrentRoute() {
 }
 
 function App() {
+
   return (
     <StyledApp>
-      <Stars />
+      <Stars style={{position: "absolute", top:0}} />
     </StyledApp>
   )
 }

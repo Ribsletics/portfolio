@@ -1,13 +1,12 @@
-import { StyledPage } from './page.style.js'
+import { Box } from '@mui/material';
+import './page.css';
+
 function Page ({ name, children }) {
 
   return (
-    <StyledPage>
-      <div className={`page-container ${name}`}>
-        <h1>{name}</h1>
+      <Box className={`page-container ${name}`}>
         {children}
-      </div>
-    </StyledPage>
+      </Box>
   )
 }
 

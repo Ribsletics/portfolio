@@ -52,14 +52,14 @@ export const StarsWrapper = (props) => {
 
   useEffect(() => {
     if (!routeLocation) return
-    //console.log("routeLocation: ", routeLocation.pathname)
+
     routePathname.current = routeLocation.pathname.split('/')[1]
     if (update.current) update.current({ selectedItem:routePathname.current })
   }, [routeLocation])
 
   const onInitialized = useCallback((updateFunc) => {
     if (!location) return
-    // console.log("location: ", location.pathname)
+    
     update.current = updateFunc
     update.current({ selectedItem:routePathname.current })
   }, [])
