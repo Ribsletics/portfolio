@@ -42,7 +42,7 @@ export function BasicSpeedDial() {
       <SpeedDial
         ariaLabel="SpeedDial"
         sx={{ position: 'absolute', bottom: 16, right: 16 }}
-        icon={<SpeedDialIcon sx={{bgcolor: '#7e00ff29'}} />}
+        icon={<SpeedDialIcon />}
         onClose={handleClose}
         onClick={handleClick}
         open={open}
