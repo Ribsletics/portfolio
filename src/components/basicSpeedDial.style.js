@@ -5,7 +5,7 @@ export const StyledBasicSpeedDial = styled(Box)(
   height: 320px;
   flex-grow: 1;
   position: absolute;
-    bottom: 3px;
-    right: 3px;
+  bottom: 3px;
+  right: 3px;
 `,
 )
