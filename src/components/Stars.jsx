@@ -164,6 +164,7 @@ export const Stars = ({ onInitialized }) => {
 
             star.sprite.anchor.x = 0.5;
             star.sprite.anchor.y = .8;
+            star.sprite.alpha = 0.7;
             appRef.current.stage.addChild(star.sprite);
             updateStar(star, true, app.renderer.screen.width, app.renderer.screen.height);
             stars.current.push(star);

@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
 import './page.css';
 
-function Page ({ name, children }) {
+function Page ({ children }) {
 
   return (
-      <Box className={`page-container ${name}`}>
+      <Box className={'page-container'}>
         {children}
       </Box>
   )

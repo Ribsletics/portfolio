@@ -1,4 +1,4 @@
-import { Box, Stack, ThemeProvider, createTheme } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -23,17 +23,6 @@ export default function TimeLine() {
     return routeLocation.pathname.split('/')[1] === page;
   };
 
-  const theme = createTheme({
-    components: {
-      MuiTimelineContent : {
-        styleOverrides: {
-          root: {
-            fontSize: "14px"
-          }
-        }
-      }
-    }
-  });
 
   return (
     <Box className="timeline"
@@ -42,14 +31,13 @@ export default function TimeLine() {
            left:0,
            pt: 4}}>
       <Stack direction="column" spacing={2}>
-        <ThemeProvider theme={theme}>
-          <Timeline position="alternate" sx={{minWidth:"220px", padding:"0"}}>
+          <Timeline position="alternate" sx={{minWidth:"230px", padding:"0"}}>
             <TimelineItem>
               <TimelineSeparator>
                 <TimelineDot sx={{bgcolor:"#fce303", boxShadow: shouldApplyBoxShadow('contact') ? `${boxShadowStyle} ${yellow}` : 'none' }} />
                 <TimelineConnector sx={{bgcolor:'#7e00ff'}} />
               </TimelineSeparator>
-              <TimelineContent fontSize={"10px"}>Contact</TimelineContent>
+              <TimelineContent>Contact</TimelineContent>
             </TimelineItem>
             <TimelineItem>
               <TimelineSeparator>
@@ -72,7 +60,6 @@ export default function TimeLine() {
               <TimelineContent>Experience</TimelineContent>
             </TimelineItem>
           </Timeline>
-        </ThemeProvider>
       </Stack>
     </Box>
   )
