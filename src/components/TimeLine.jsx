@@ -28,10 +28,9 @@ export default function TimeLine() {
     <Box className="timeline"
       sx={{position:"absolute",
            bottom:0,
-           left:0,
-           pt: 4}}>
+           left:0}}>
       <Stack direction="column" spacing={2}>
-          <Timeline position="alternate" sx={{minWidth:"230px", padding:"0"}}>
+          <Timeline position="alternate" sx={{minWidth:"240px", padding:"0"}}>
             <TimelineItem>
               <TimelineSeparator>
                 <TimelineDot sx={{bgcolor:"#fce303", boxShadow: shouldApplyBoxShadow('contact') ? `${boxShadowStyle} ${yellow}` : 'none' }} />

@@ -4,10 +4,11 @@
   width: 100vw;
   display: flex;
   align-items: center;
+  justify-content: center;
   /* font-family: 'Orbitron', sans-serif; */
+  
 }
 
 .page-container div {
-  width: 100%;
-  height: auto;
+  /* height: auto; */
 }

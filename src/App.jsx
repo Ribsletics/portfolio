@@ -22,34 +22,26 @@ import { createTheme, ThemeProvider } from '@mui/material'
 const theme = createTheme({
   typography: {
     fontFamily: 'Orbitron',
-    fontSize:  14,
-    h1: {
-      fontSize: '2.5rem',
-      fontWeight: 500,
-    },
-    h3: {
-      fontSize: '1.5rem',
-      fontWeight: 500,
-    },
+    fontSize: 12,
+    h1: { fontSize: '2.5rem',
+          fontWeight: 500,},
+    h3: { fontSize: '1.5rem',
+          fontWeight: 500,},
+    p: { fontSize: '.8rem' }
   },
   components: {
     MuiTypography : {
       styleOverrides: {
-        root: {
-          textShadow: '2px 2px 3px #000000',
-          fontFamily: 'Orbitron',
-        }
-      }
-    },
+        root: { textShadow: '2px 2px 3px #000000',
+                fontFamily: 'Orbitron',}}},
     MuiTimelineContent : {
       styleOverrides: {
-        root: {
-          textShadow: '2px 2px 3px #000000',
-          fontFamily: 'Orbitron',
-          fontSize: '.8rem'
-        }
-      }
-    }
+        root: { textShadow: '2px 2px 3px #000000',
+                fontFamily: 'Orbitron',
+                fontSize: '.8rem'}}},
+    MuiTimelineItem: {
+      styleOverrides: {
+        root: { minHeight: '60px',}}}
   }
 });
 
@@ -107,14 +99,13 @@ function CurrentRoute() {
 }
 
 function App() {
-
+  
   return (
     <StyledApp>
       <Stars style={{position: "absolute", top:0}} />
     </StyledApp>
   )
 }
-
 
 function Wrapper() {
   return (
