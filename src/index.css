@@ -21,6 +21,7 @@
 
 body {
   margin: 0;
+  overflow: hidden;
 }
 
 h1 {
@@ -31,9 +32,6 @@ h1 {
 
 @media screen and (max-width: 600px) {
   .timeline {
-    /* display:none; */
-    transform: scale(.6);
-    transform-origin: bottom left;
-    padding-top: 0px !important
+    display:none;
   }
 }

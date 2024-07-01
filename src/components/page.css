@@ -5,10 +5,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* font-family: 'Orbitron', sans-serif; */
+  max-width: 1280px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.page {
+  min-width:800px;
+  max-width: 800px;
   
 }
 
-.page-container div {
-  /* height: auto; */
+@media (max-width: 800px) {
+  .page {
+    min-width: unset;
+    max-width: unset;
+    width: 100%;
+  }
 }

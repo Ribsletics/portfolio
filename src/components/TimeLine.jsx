@@ -26,9 +26,7 @@ export default function TimeLine() {
 
   return (
     <Box className="timeline"
-      sx={{position:"absolute",
-           bottom:0,
-           left:0}}>
+      sx={{position:"absolute", bottom:3, left:3}}>
       <Stack direction="column" spacing={2}>
           <Timeline position="alternate" sx={{minWidth:"240px", padding:"0"}}>
             <TimelineItem>

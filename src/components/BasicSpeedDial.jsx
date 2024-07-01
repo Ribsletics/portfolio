@@ -5,10 +5,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectItem, setLocation } from '../redux/reducers/nav.reducer.js'
 import { ContactMail, Engineering, PeopleAltOutlined, PersonPin, RocketLaunch, Rocket,  } from '@mui/icons-material'
 import { Link, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import React from 'react'
 import { selectNav } from '../redux/selectors/nav.selector';
 import { SpeedDialIcon, ThemeProvider, createTheme } from '@mui/material'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 const actions = [
   { icon: <Engineering />, name: 'Experience', color: '#15ff00'},
@@ -21,11 +23,16 @@ export function BasicSpeedDial() {
   const location = useLocation()
   const dispatch = useDispatch()
   const [open, setOpen] = React.useState(false);
+  const ref = useRef(null);
 
   useEffect(() => {
-    dispatch(setLocation(location))
+    dispatch(setLocation(location));
   }, [dispatch, location])
-  
+
+  useGSAP(() => {
+    gsap.fromTo('button.MuiButtonBase-root', {scale:.8}, {duration: 2, scale:1, repeat: -1, ease:"elastic.out(1.2,0.2)", repeatDelay: 3})
+  }, {scope: ref})
+
   const handleClick = (e) => {
     setOpen(!open);
     const action = e.currentTarget.getAttribute('aria-label')
@@ -67,11 +74,13 @@ export function BasicSpeedDial() {
     <ThemeProvider theme={theme}>
       <StyledBasicSpeedDial>
         <SpeedDial
+          ref={ref}
           ariaLabel="SpeedDial"
-          icon={<SpeedDialIcon icon={<RocketLaunch />} openIcon={<Rocket/>} />}
+          icon={<SpeedDialIcon id={'icon'} icon={<RocketLaunch />} openIcon={<Rocket/>} />}
           onClose={handleClose}
           onClick={handleClick}
           open={open}
+          direction={'up'}
           sx={{ position: 'absolute', bottom: 16, right: 16}}
           
         >
