@@ -30,7 +30,7 @@ export function BasicSpeedDial() {
   }, [dispatch, location])
 
   useGSAP(() => {
-    gsap.fromTo('button.MuiButtonBase-root', {scale:.8}, {duration: 2, scale:1, repeat: -1, ease:"elastic.out(1.2,0.2)", repeatDelay: 3})
+    //gsap.fromTo('button.MuiButtonBase-root', {scale:.8}, {duration: 2, scale:1, repeat: -1, ease:"elastic.out(1.2,0.2)", repeatDelay: 3})
   }, {scope: ref})
 
   const handleClick = (e) => {
@@ -93,7 +93,7 @@ export function BasicSpeedDial() {
               tooltipTitle={action.name}
               onClick={handleClick}
               data-index={i}
-              sx={{bgcolor: shouldHighlight(action.name.toLowerCase()) ? action.color : `${action.color}7d`, '&:hover': {bgcolor:action.color}}}
+              sx={{bgcolor:action.color, filter: shouldHighlight(action.name.toLowerCase()) ? 'brightness(120%)' : 'brightness(50%)', '&:hover': {filter: 'brightness(120%)'}}}
             />
           ))}
         </SpeedDial>
