@@ -93,7 +93,7 @@ export function BasicSpeedDial() {
               tooltipTitle={action.name}
               onClick={handleClick}
               data-index={i}
-              sx={{bgcolor:action.color, filter: shouldHighlight(action.name.toLowerCase()) ? 'brightness(120%)' : 'brightness(50%)', '&:hover': {filter: 'brightness(120%)'}}}
+              sx={{bgcolor:action.color, filter: shouldHighlight(action.name.toLowerCase()) ? 'brightness(120%)' : 'brightness(60%)', '&:hover': {filter: 'brightness(120%)', bgcolor:action.color}}}
             />
           ))}
         </SpeedDial>
