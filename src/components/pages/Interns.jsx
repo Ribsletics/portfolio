@@ -9,7 +9,7 @@ function Interns() {
   })
 
   return (
-    <Box className="inters page" m={2}>
+    <Box className="interns page" m={2}>
       <Stack direction="column" spacing={2}>
         <Box>
           <Typography variant="h1" align="center">INTERNS</Typography>

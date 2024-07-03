@@ -32,25 +32,25 @@ let router = createHashRouter([
     children: [
       {
         index: true,
-        element:<Page>
+        element:<Page page={"home"} >
                   <Home />
                 </Page>
       },
       {
         path: "experience",
-        element:<Page>
+        element:<Page page={"experience"} >
                   <Experience />
                 </Page> 
       },
       {
         path: "about",
-        element:<Page>
+        element:<Page page={"about"} >
                   <About />
                 </Page>
       },
       {
         path: "interns",
-        element:<Page>
+        element:<Page className={"interns"}>
                   <Interns />
                 </Page>
       },
