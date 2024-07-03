@@ -5,7 +5,7 @@ import gsap from "gsap";
 function Interns() {
 
   useGSAP(() => {
-    gsap.fromTo(".inters", { opacity: 0, scale: 0.5, y: "+=20" }, { duration: .6, opacity: 1, y: 0, scale: 1, delay: 2.5 })
+    gsap.fromTo(".interns", { opacity: 0, scale: 0.5, y: "+=20" }, { duration: .6, opacity: 1, y: 0, scale: 1, delay: 2.5 })
   })
 
   return (
@@ -23,8 +23,6 @@ function Interns() {
             />
             <CardContent sx={{ p: "10px" }}>
               <Typography variant="h3" align="center">:: UNDER CONTSTRUCTION ::</Typography>
-
-          
             </CardContent>
           </Card>
         </Paper>

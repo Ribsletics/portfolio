@@ -3,7 +3,7 @@ import SpeedDialAction from '@mui/material/SpeedDialAction'
 import { StyledBasicSpeedDial } from './basicSpeedDial.style'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectItem, setLocation } from '../redux/reducers/nav.reducer.js'
-import { ContactMail, Engineering, PeopleAltOutlined, PersonPin, RocketLaunch, Rocket,  } from '@mui/icons-material'
+import { ContactMail, Engineering, PersonPin, RocketLaunch, Rocket, Pets } from '@mui/icons-material'
 import { Link, useLocation } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
 import React from 'react'
@@ -15,7 +15,7 @@ import gsap from 'gsap'
 const actions = [
   { icon: <Engineering />, name: 'Experience', color: '#15ff00'},
   { icon: <PersonPin />, name: 'About', color: '#ff7700'},
-  { icon: <PeopleAltOutlined />, name: 'Interns', color: '#0384fc' },
+  { icon: <Pets />, name: 'Interns', color: '#0384fc' },
   { icon: <ContactMail />, name: 'Contact', color: '#fce303'},
 ]
 
@@ -67,9 +67,6 @@ export function BasicSpeedDial() {
       },
     },
   });
-
-
-
   return (
     <ThemeProvider theme={theme}>
       <StyledBasicSpeedDial>
@@ -81,7 +78,6 @@ export function BasicSpeedDial() {
           onClick={handleClick}
           open={open}
           direction={'down'}
-          
         >
           {actions.map((action, i) => (
             <SpeedDialAction
