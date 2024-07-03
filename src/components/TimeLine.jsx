@@ -26,22 +26,15 @@ export default function TimeLine() {
 
   return (
     <Box className="timeline"
-      sx={{position:"absolute", bottom:3, left:3}}>
+      sx={{position:"absolute", top:3, left:3}}>
       <Stack direction="column" spacing={2}>
           <Timeline position="alternate" sx={{minWidth:"240px", padding:"0"}}>
             <TimelineItem>
               <TimelineSeparator>
-                <TimelineDot sx={{bgcolor:"#fce303", boxShadow: shouldApplyBoxShadow('contact') ? `${boxShadowStyle} ${yellow}` : 'none' }} />
+                <TimelineDot sx={{bgcolor:"#15ff00", boxShadow: shouldApplyBoxShadow('experience') ? `${boxShadowStyle} ${green}` : 'none' }} />
                 <TimelineConnector sx={{bgcolor:'#7e00ff'}} />
               </TimelineSeparator>
-              <TimelineContent>Contact</TimelineContent>
-            </TimelineItem>
-            <TimelineItem>
-              <TimelineSeparator>
-                <TimelineDot sx={{bgcolor:"#0384fc", boxShadow: shouldApplyBoxShadow('interns') ?  `${boxShadowStyle} ${blue}` : 'none' }} />
-                <TimelineConnector sx={{bgcolor:'#7e00ff'}} />
-              </TimelineSeparator>
-              <TimelineContent>Interns</TimelineContent>
+              <TimelineContent>Experience</TimelineContent>
             </TimelineItem>
             <TimelineItem>
               <TimelineSeparator>
@@ -52,9 +45,16 @@ export default function TimeLine() {
             </TimelineItem>
             <TimelineItem>
               <TimelineSeparator>
-                <TimelineDot sx={{bgcolor:"#15ff00", boxShadow: shouldApplyBoxShadow('experience') ?  `${boxShadowStyle} ${green}` : 'none' }}/>
+                <TimelineDot sx={{bgcolor:"#0384fc", boxShadow: shouldApplyBoxShadow('interns') ?  `${boxShadowStyle} ${blue}` : 'none' }} />
+                <TimelineConnector sx={{bgcolor:'#7e00ff'}} />
               </TimelineSeparator>
-              <TimelineContent>Experience</TimelineContent>
+              <TimelineContent>Interns</TimelineContent>
+            </TimelineItem>
+            <TimelineItem>
+              <TimelineSeparator>
+                <TimelineDot sx={{bgcolor:"#fce303", boxShadow: shouldApplyBoxShadow('contact') ?  `${boxShadowStyle} ${yellow}` : 'none' }}/>
+              </TimelineSeparator>
+              <TimelineContent>Contact</TimelineContent>
             </TimelineItem>
           </Timeline>
       </Stack>

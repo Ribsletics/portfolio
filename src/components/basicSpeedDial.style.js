@@ -5,8 +5,8 @@ export const StyledBasicSpeedDial = styled(Box)(
   height: 320px;
   flex-grow: 1;
   position: absolute;
-  bottom: 3px;
-  right: 3px;
+  top: 6px;
+  right: 6px;
 
   .MuiButtonBase-root {
     transition: none !important;

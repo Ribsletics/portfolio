@@ -30,7 +30,7 @@ export function BasicSpeedDial() {
   }, [dispatch, location])
 
   useGSAP(() => {
-    //gsap.fromTo('button.MuiButtonBase-root', {scale:.8}, {duration: 2, scale:1, repeat: -1, ease:"elastic.out(1.2,0.2)", repeatDelay: 3})
+    gsap.fromTo('button.MuiButtonBase-root', {scale:.8}, {duration: 2, scale:1, repeat: -1, ease:"elastic.out(1.2,0.2)", repeatDelay: 3})
   }, {scope: ref})
 
   const handleClick = (e) => {
@@ -80,8 +80,7 @@ export function BasicSpeedDial() {
           onClose={handleClose}
           onClick={handleClick}
           open={open}
-          direction={'up'}
-          sx={{ position: 'absolute', bottom: 16, right: 16}}
+          direction={'down'}
           
         >
           {actions.map((action, i) => (
