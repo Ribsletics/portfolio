@@ -34,7 +34,7 @@ function About () {
               </Typography>
               <Typography variant="h3" mt={2}>Drums:</Typography>
               <Typography variant="body1">
-                I have been playing drums for over 25 years. I have played in bands, recorded in studios, and performed live. I have experience with a variety of styles, including rock, metal, funk, and jazz. Favorite band is Tool. Vinyil {'>'} digital.
+                I have been playing drums for over 25 years. I have played in bands, recorded in studios, and performed live. I have experience with a variety of styles, including rock, metal, funk, and jazz. Favorite band is Tool. Vinyl {'>'} digital.
               </Typography>
             </CardContent>
           </Card>
